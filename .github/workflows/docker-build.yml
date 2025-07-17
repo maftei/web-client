@@ -28,24 +28,23 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push Docker image
+      - name: Build, tag, and push Docker image (HARD CODED)
         run: |
-          echo "Preparing to build and push image..."
-          
-          IMAGE_URI="${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}"
+          # ✅ Hardcoded values for testing
+          ECR_REGISTRY="914132589502.dkr.ecr.us-east-1.amazonaws.com"
+          ECR_REPOSITORY="web-client"
           GIT_TAG="${{ steps.vars.outputs.sha_short }}"
-          
-          echo "🔧 Image URI: $IMAGE_URI"
-          echo "🔖 Tag: $GIT_TAG"
 
-          echo "🛠️ Building image..."
+          IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY"
+
+          echo "🛠️ Building image: $IMAGE_URI:$GIT_TAG"
           docker build -t $IMAGE_URI:$GIT_TAG .
 
-          echo "🏷️ Tagging as latest..."
+          echo "🏷️ Tagging image as latest"
           docker tag $IMAGE_URI:$GIT_TAG $IMAGE_URI:latest
 
-          echo "📤 Pushing tag $GIT_TAG..."
+          echo "📤 Pushing $GIT_TAG"
           docker push $IMAGE_URI:$GIT_TAG
 
-          echo "📤 Pushing tag latest..."
+          echo "📤 Pushing latest"
           docker push $IMAGE_URI:latest
