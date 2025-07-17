@@ -1,5 +1,5 @@
 name: Build and Push Docker Image to ECR
-
+#  This workflow builds a Docker image for the web client and pushes it to Amazon ECR.
 on:
   push:
     branches: [main]
