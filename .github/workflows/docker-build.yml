@@ -2,14 +2,20 @@ name: Build and Push Web Client Image
 
 on:
   push:
-    branches: [main]
+    branches:
+      - dev
   workflow_dispatch:
+    inputs:
+      namespace:
+        description: 'Namespace for deployment (optional override)'
+        required: false
+        default: ''
 
 jobs:
   build:
     uses: maftei/pocplatform-workflow-templates/.github/workflows/build-docker-image.yaml@main
     with:
-      namespace: dev
+      namespace: ${{ github.event.inputs.namespace != '' && github.event.inputs.namespace || github.ref_name }}
     secrets:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
