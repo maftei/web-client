@@ -5,15 +5,6 @@ on:
     branches: [dev]
   pull_request:
   workflow_dispatch:
-    inputs:
-      namespace:
-        type: choice
-        description: "Select target namespace"
-        required: true
-        default: "dev"
-        options:
-          - dev
-          - sit
 
 jobs:
   set-namespace:
@@ -21,7 +12,6 @@ jobs:
     with:
       event_name: ${{ github.event_name }}
       ref: ${{ github.ref }}
-      namespace: ${{ github.event.inputs.namespace }}
     secrets: inherit
 
   build:
