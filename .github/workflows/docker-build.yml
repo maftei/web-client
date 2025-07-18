@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to ECR
+name: Build and Push Web Client Image
 
 on:
   push:
@@ -6,45 +6,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push:
-    name: Build and Push Docker Image
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Extract short Git SHA
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short=8 HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build, tag, and push Docker image (HARD CODED)
-        run: |
-          # ✅ Hardcoded values for testing
-          ECR_REGISTRY="914132589502.dkr.ecr.us-east-1.amazonaws.com"
-          ECR_REPOSITORY="web-client"
-          GIT_TAG="${{ steps.vars.outputs.sha_short }}"
-
-          IMAGE_URI="$ECR_REGISTRY/$ECR_REPOSITORY"
-
-          echo "🛠️ Building image: $IMAGE_URI:$GIT_TAG"
-          docker build -t $IMAGE_URI:$GIT_TAG .
-
-          echo "🏷️ Tagging image as latest"
-          docker tag $IMAGE_URI:$GIT_TAG $IMAGE_URI:latest
-
-          echo "📤 Pushing $GIT_TAG"
-          docker push $IMAGE_URI:$GIT_TAG
-
-          echo "📤 Pushing latest"
-          docker push $IMAGE_URI:latest
+  build:
+    uses: maftei/pocplatform-workflow-templates/.github/workflows/build-docker-image.yaml@main
+    with:
+      namespace: dev
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
