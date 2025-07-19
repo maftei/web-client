@@ -3,7 +3,7 @@ import React from 'react';
 function App() {
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Hello from DevOps2025 Web Client version11</h1>
+      <h1>Hello from DevOps2025 Web Client version12</h1>
     </div>
   );
 }
